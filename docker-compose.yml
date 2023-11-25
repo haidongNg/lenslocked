@@ -4,16 +4,17 @@ services:
   # Our Postgres database
   db:
     # The service will be named db.
-    image: postgres # The postgres image will be used
+    image: mysql # The postgres image will be used
     restart: always # Always try to restart if this stops running
     environment:
       # Provide environment variables
-      POSTGRES_USER: baloo # POSTGRES_USER env var w/ value baloo
-      POSTGRES_PASSWORD: junglebook
-      POSTGRES_DB: lenslocked
+      MYSQL_DATABASE: lenslocked
+      MYSQL_USER: baloo # POSTGRES_USER env var w/ value baloo
+      MYSQL_PASSWORD: junglebook
+      MYSQL_ROOT_PASSWORD: root
     ports:
       # Expose ports so that apps not running via docker compose can connect to them.
-      - 5432:5432 # format here is "port on our machine":"port on container"
+      - 3306:3306 # format here is "port on our machine":"port on container"
 
   # Adminer provides a nice little web UI to connect to databases
   adminer:
