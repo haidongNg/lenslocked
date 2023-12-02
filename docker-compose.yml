@@ -4,26 +4,21 @@ services:
   # Our Postgres database
   db:
     # The service will be named db.
-    image: mysql # The postgres image will be used
-    # NOTE: use of "mysql_native_password" is not recommended: https://dev.mysql.com/doc/refman/8.0/en/upgrading-from-previous-series.html#upgrade-caching-sha2-password
-    # (this is just an example, not intended to be a production configuration)
-    command: --default-authentication-plugin=caching_sha2_password
+    image: postgres:16.1 # The postgres image will be used
     restart: always # Always try to restart if this stops running
     environment:
       # Provide environment variables
-      MYSQL_ROOT_PASSWORD: password
-      MYSQL_DATABASE: lenslocked
-      MYSQL_USER: baloo # POSTGRES_USER env var w/ value baloo
-      MYSQL_PASSWORD: junglebook
+      POSTGRES_USER: baloo # POSTGRES_USER env var w/ value baloo
+      POSTGRES_PASSWORD: junglebook
+      POSTGRES_DB: lenslocked
     ports:
       # Expose ports so that apps not running via docker compose can connect to them.
-      - 3306:3306 # format here is "port on our machine":"port on container"
+      - 5432:5432 # format here is "port on our machine":"port on container"
     volumes:
-      - ./mysql_data/data:/var/lib/mysql
-      - ./mysql_data/my.cnf:/etc/mysql/conf.d/my.cnf
+      - ./postgres_data/data:/var/lib/postgresql/data
   # Adminer provides a nice little web UI to connect to databases
-  adminer:
-    image: adminer
-    restart: always
-    ports:
-      - 3333:8080
+  # adminer:
+  #   image: adminer
+  #   restart: always
+  #   ports:
+  #     - 3333:8080

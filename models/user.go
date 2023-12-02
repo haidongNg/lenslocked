@@ -37,16 +37,12 @@ func (us *UserService) Create(email string, password string) (*User, error) {
 		PasswordHash: passwordHash,
 	}
 	// Insert
-	row, err := us.DB.Exec(`INSERT INTO sys_users(email, password_hash) VALUES(?,?)`, email, passwordHash)
+	row := us.DB.QueryRow(`INSERT INTO sys_users(email, password_hash) VALUES($1,$2) RETURNING id`, email, passwordHash)
+	var id int
+	err = row.Scan(&id)
 	if err != nil {
 		return nil, fmt.Errorf("Create user: %w", err)
 	}
-	// Get last ID after insert
-	lastId, err := row.LastInsertId()
-	if err != nil {
-		return nil, fmt.Errorf("Create user: %w", err)
-	}
-	user.ID = int(lastId)
 	return &user, nil
 }
 
@@ -56,7 +52,7 @@ func (us *UserService) Authenticate(email string, password string) (*User, error
 		Email: email,
 	}
 
-	row := us.DB.QueryRow("SELECT id, password_hash FROM sys_users WHERE email = ?", email)
+	row := us.DB.QueryRow("SELECT id, password_hash FROM sys_users WHERE email = $1", email)
 
 	err := row.Scan(&user.ID, &user.PasswordHash)
 	if err != nil {

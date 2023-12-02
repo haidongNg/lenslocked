@@ -18,7 +18,7 @@ func main() {
 	r.Get("/contact", controllers.StaticHandler(views.Must(views.ParseFS(templates.FS, "contact-page.html", "tailwind.html"))))
 	r.Get("/faq", controllers.FAQ(views.Must(views.ParseFS(templates.FS, "faq-page.html", "tailwind.html"))))
 
-	cfg := models.DefaultMysqlConfig()
+	cfg := models.DefaultPostgresConfig()
 
 	db, err := models.Open(cfg)
 
@@ -42,6 +42,7 @@ func main() {
 	r.Post("/users", userC.Create)
 	r.Get("/signin", userC.SignIn)
 	r.Post("/signin", userC.ProcessSignIn)
+	r.Get("/users/me", userC.CurrentUser)
 	r.NotFound(func(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Page not found", http.StatusNotFound)
 	})
