@@ -34,8 +34,14 @@ func main() {
 		DB: db,
 	}
 
+	sessionService := models.SessionService{
+		DB: db,
+	}
+
+	// Setup our controllers
 	userC := controllers.Users{
-		UserService: &userService,
+		UserService:    &userService,
+		SessionService: &sessionService,
 	}
 	userC.Templates.New = views.Must(views.ParseFS(templates.FS, "signup-page.html", "tailwind.html"))
 	userC.Templates.SignIn = views.Must(views.ParseFS(templates.FS, "signin-page.html", "tailwind.html"))
@@ -43,6 +49,7 @@ func main() {
 	r.Post("/users", userC.Create)
 	r.Get("/signin", userC.SignIn)
 	r.Post("/signin", userC.ProcessSignIn)
+	r.Post("/signout", userC.ProcessSignOut)
 	r.Get("/users/me", userC.CurrentUser)
 	r.NotFound(func(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Page not found", http.StatusNotFound)
@@ -50,7 +57,7 @@ func main() {
 	fmt.Printf("Starting the server on :3000...")
 
 	csrfKey := "gFvi45R4fy5xNBlnEeZtQbfAVCYEIAUX"
-
-	csrfMw := csrf.Protect([]byte(csrfKey))
+	// csrf.Secure(true) fix after deyploy
+	csrfMw := csrf.Protect([]byte(csrfKey), csrf.Secure(false))
 	http.ListenAndServe(":3000", csrfMw(r))
 }
