@@ -15,9 +15,9 @@ import (
 func main() {
 	r := chi.NewRouter()
 
-	r.Get("/", controllers.StaticHandler(views.Must(views.ParseFS(templates.FS, "home-page.html", "tailwind.html"))))
-	r.Get("/contact", controllers.StaticHandler(views.Must(views.ParseFS(templates.FS, "contact-page.html", "tailwind.html"))))
-	r.Get("/faq", controllers.FAQ(views.Must(views.ParseFS(templates.FS, "faq-page.html", "tailwind.html"))))
+	r.Get("/", controllers.StaticHandler(views.Must(views.ParseFS(templates.FS, "home-page.html", "paper.html"))))
+	r.Get("/contact", controllers.StaticHandler(views.Must(views.ParseFS(templates.FS, "contact-page.html", "paper.html"))))
+	r.Get("/faq", controllers.FAQ(views.Must(views.ParseFS(templates.FS, "faq-page.html", "paper.html"))))
 
 	cfg := models.DefaultPostgresConfig()
 
@@ -43,8 +43,8 @@ func main() {
 		UserService:    &userService,
 		SessionService: &sessionService,
 	}
-	userC.Templates.New = views.Must(views.ParseFS(templates.FS, "signup-page.html", "tailwind.html"))
-	userC.Templates.SignIn = views.Must(views.ParseFS(templates.FS, "signin-page.html", "tailwind.html"))
+	userC.Templates.New = views.Must(views.ParseFS(templates.FS, "signup-page.html", "paper.html"))
+	userC.Templates.SignIn = views.Must(views.ParseFS(templates.FS, "signin-page.html", "paper.html"))
 	r.Get("/signup", userC.New)
 	r.Post("/users", userC.Create)
 	r.Get("/signin", userC.SignIn)
