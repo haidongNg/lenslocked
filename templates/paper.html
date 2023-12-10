@@ -1,0 +1,51 @@
+{{define "header"}}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://unpkg.com/papercss@1.9.2/dist/paper.min.css" />
+    <title>Lenslocked Page</title>
+</head>
+
+<body>
+    <nav class="border split-nav">
+        <div class="nav-brand">
+            <h3><a href="/">Lenslocked</a></h3>
+        </div>
+        <div class="collapsible">
+            <input id="collapsible1" type="checkbox" name="collapsible1">
+            <label for="collapsible1">
+                <div class="bar1"></div>
+                <div class="bar2"></div>
+                <div class="bar3"></div>
+            </label>
+            <div class="collapsible-body">
+                <ul class="inline">
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/contact">Contact</a></li>
+                    <li><a href="/faq">FAQ</a></li>
+                    <li>
+                        <form action="/signout" method="post">
+                            <div class="hidden">
+                                {{csrfField}}
+                            </div>
+                            <button class="btn-small" type="submit">Sign out</button>
+                        </form>
+                    </li>
+                    <li><a href="/signin">Sign In</a></li>
+                    <li><a href="/signup">Sign Up</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="paper" style="min-height: 85vh;">
+        {{end}}
+        <!-- Each page's content goes here. -->
+        {{define "footer"}}
+    </div>
+</body>
+
+</html>
+{{end}}

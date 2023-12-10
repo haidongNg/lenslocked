@@ -1,0 +1,42 @@
+{{template "header" .}}
+<div class="row flex-center child-borders">
+    <div class="col shadow">
+        <h3>
+            Welcome back!
+        </h3>
+        <form action="/signin" method="post">
+            <div class="hidden">
+                {{csrfField}}
+            </div>
+            <div class="form-group">
+                <label for="email">
+                    Email Address
+                </label>
+                <input name="email" id="email" type="email" placeholder="Email address" required autocomplete="email"
+                    class="input-block" value="{{.Email}}" {{if not .Email}}autofocus{{end}} />
+            </div>
+            <div class="form-group">
+                <label for="password">
+                    Password
+                </label>
+                <input name="password" id="password" type="password" placeholder="Password" required class="input-block"
+                    {{if .Email}}autofocus{{end}} />
+            </div>
+            <div class="row flex-right">
+                <button type="submit">
+                    Sign in
+                </button>
+            </div>
+            <div class="row flex-edges">
+                <p class="col padding-top-none padding-bottom-none">
+                    Need an account?
+                    <a href="/signup" class="underline">Sign up</a>
+                </p>
+                <p class="col padding-top-none padding-bottom-none">
+                    <a href="/reset-pw" class="underline">Forgot your password?</a>
+                </p>
+            </div>
+        </form>
+    </div>
+</div>
+{{template "footer" .}}

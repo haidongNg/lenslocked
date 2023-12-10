@@ -1,0 +1,34 @@
+{{template "header" .}}
+<div class="row flex-center child-borders">
+    <div class="col shadow">
+        <h3>Start sharing your photos today!</h3>
+        <form action="/users" method="post">
+            <div class="hidden">
+                {{csrfField}}
+            </div>
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input name="email" id="email" type="email" placeholder="Email address" required autocomplete="email"
+                    class="input-block" value="{{.Email}}" {{if not .Email}}autofocus{{end}} />
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input name="password" id="password" type="password" placeholder="*******" required class="input-block"
+                    value="{{.Password}}" {{if .Email}}autofocus{{end}} />
+            </div>
+            <div class="row flex-right">
+                <button type="submit">Sign up</button>
+            </div>
+            <div class="row flex-edges">
+                <p class="col padding-top-none padding-bottom-none">
+                    Already have an account?
+                    <a href="/signin" class="underline">Sign in</a>
+                </p>
+                <p class="col padding-top-none padding-bottom-none">
+                    <a href="/reset-pw" class="underline">Forgot your password?</a>
+                </p>
+            </div>
+        </form>
+    </div>
+</div>
+{{template "footer" .}}

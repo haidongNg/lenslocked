@@ -1,0 +1,19 @@
+{{template "header" .}}
+
+<div class="container">
+    <h1>FAQ Page</h1>
+    <div class="row flex-spaces">
+        {{range .}}
+        {{template "qa" .}}
+        {{end}}
+    </div>
+    <!-- <a class="px-4 py-2 bg-indigo-600 hover:bg-indigo-800 text-white rounded" href="/signup">Sing up</a> -->
+</div>
+
+{{define "qa"}}
+<div class="sm-4 col">
+    <h4>{{.Question}}</h4>
+    <p>{{.Answer}}</p>
+</div>
+{{end}}
+{{template "footer". }}
