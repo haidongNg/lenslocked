@@ -1,14 +1,12 @@
 module github.com/haidongNg/lenslocked
 
-go 1.21.4
+go 1.21.5
 
 require (
 	github.com/go-chi/chi/v5 v5.0.10
+	github.com/gorilla/csrf v1.7.2
 	github.com/lib/pq v1.10.9
 	golang.org/x/crypto v0.15.0
 )
 
-require (
-	github.com/gorilla/csrf v1.7.2 // indirect
-	github.com/gorilla/securecookie v1.1.2 // indirect
-)
+require github.com/gorilla/securecookie v1.1.2 // indirect
