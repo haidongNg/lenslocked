@@ -26,6 +26,7 @@
                     <li><a href="/">Home</a></li>
                     <li><a href="/contact">Contact</a></li>
                     <li><a href="/faq">FAQ</a></li>
+                    {{ if currentUser }}
                     <li>
                         <form action="/signout" method="post">
                             <div class="hidden">
@@ -34,8 +35,10 @@
                             <button class="btn-small" type="submit">Sign out</button>
                         </form>
                     </li>
+                    {{else}}
                     <li><a href="/signin">Sign In</a></li>
                     <li><a href="/signup">Sign Up</a></li>
+                    {{end}}
                 </ul>
             </div>
         </div>
