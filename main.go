@@ -19,8 +19,8 @@ func main() {
 	r.Get("/contact", controllers.StaticHandler(views.Must(views.ParseFS(templates.FS, "contact-page.html", "paper.html"))))
 	r.Get("/faq", controllers.FAQ(views.Must(views.ParseFS(templates.FS, "faq-page.html", "paper.html"))))
 
+	// Set up a database connection
 	cfg := models.DefaultPostgresConfig()
-
 	db, err := models.Open(cfg)
 
 	if err != nil {
@@ -38,6 +38,15 @@ func main() {
 		DB: db,
 	}
 
+	// Set up middleware
+	umw := controllers.UserMiddleware{
+		SessionService: &sessionService,
+	}
+
+	csrfKey := "gFvi45R4fy5xNBlnEeZtQbfAVCYEIAUX"
+	// csrf.Secure(true) fix after deyploy
+	csrfMw := csrf.Protect([]byte(csrfKey), csrf.Secure(false))
+
 	// Setup our controllers
 	userC := controllers.Users{
 		UserService:    &userService,
@@ -45,19 +54,20 @@ func main() {
 	}
 	userC.Templates.New = views.Must(views.ParseFS(templates.FS, "signup-page.html", "paper.html"))
 	userC.Templates.SignIn = views.Must(views.ParseFS(templates.FS, "signin-page.html", "paper.html"))
+	// Set up router and routes
 	r.Get("/signup", userC.New)
 	r.Post("/users", userC.Create)
 	r.Get("/signin", userC.SignIn)
 	r.Post("/signin", userC.ProcessSignIn)
-	r.Post("/signout", userC.ProcessSignOut)
-	r.Get("/users/me", userC.CurrentUser)
+	r.With(umw.RequireUser).Post("/signout", userC.ProcessSignOut)
+	r.Route("/users/me", func(r chi.Router) {
+		r.Use(umw.RequireUser)
+		r.Get("/", userC.CurrentUser)
+	})
 	r.NotFound(func(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Page not found", http.StatusNotFound)
 	})
-	fmt.Printf("Starting the server on :3000...")
 
-	csrfKey := "gFvi45R4fy5xNBlnEeZtQbfAVCYEIAUX"
-	// csrf.Secure(true) fix after deyploy
-	csrfMw := csrf.Protect([]byte(csrfKey), csrf.Secure(false))
-	http.ListenAndServe(":3000", csrfMw(r))
+	fmt.Printf("Starting the server on :3000...")
+	http.ListenAndServe("127.0.0.1:3000", csrfMw(umw.SetUser(r)))
 }

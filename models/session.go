@@ -60,7 +60,7 @@ func (ss *SessionService) Create(sysUserId int) (*Session, error) {
 	if err == sql.ErrNoRows {
 		// If no session exists, we will get ErrNoRows. That means we need to
 		// create a session object for that user.
-		row = ss.DB.QueryRow(`INSERT INTO sys_sessions (sys_user_id, token_hash) VALUES ($1,$2) RETURNING id`, session.SysUserID, session.TokenHash)
+		row = ss.DB.QueryRow(`INSERT INTO sys_sessions (sys_user_id, token_hash) VALUES ($1,$2) ON CONFLICT (sys_user_id) DO UPDATE SET token_hash = $2 RETURNING id`, session.SysUserID, session.TokenHash)
 		// The error will be overwritten with either a new error, or nil
 		err = row.Scan(&session.ID)
 	}
@@ -79,17 +79,17 @@ func (ss *SessionService) User(token string) (*User, error) {
 	tokenHash := ss.hash(token)
 	// Query for the session with that hash
 	var user User
-	row := ss.DB.QueryRow(`SELECT sys_user_id FROM sys_sessions WHERE token_hash = $1`, tokenHash)
-	err := row.Scan(&user.ID)
+	row := ss.DB.QueryRow(`SELECT u.id, u.email, u.password_hash FROM sys_sessions as s JOIN sys_users as u ON u.id = s.sys_user_id WHERE s.token_hash = $1`, tokenHash)
+	err := row.Scan(&user.ID, &user.Email, &user.PasswordHash)
 	if err != nil {
 		return nil, fmt.Errorf("Session: %w", err)
 	}
 	// Using the UserID from the session, we need to query for that user
-	row = ss.DB.QueryRow(`SELECT email, password_hash FROM sys_users WHERE id = $1`, user.ID)
-	err = row.Scan(&user.Email, &user.PasswordHash)
-	if err != nil {
-		return nil, fmt.Errorf("User: %w", err)
-	}
+	// row = ss.DB.QueryRow(`SELECT email, password_hash FROM sys_users WHERE id = $1`, user.ID)
+	// err = row.Scan(&user.Email, &user.PasswordHash)
+	// if err != nil {
+	// 	return nil, fmt.Errorf("User: %w", err)
+	// }
 	// Return the user
 	return &user, nil
 }
