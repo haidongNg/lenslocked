@@ -4,7 +4,7 @@ services:
   # Our Postgres database
   db:
     # The service will be named db.
-    image: postgres:16.1 # The postgres image will be used
+    image: postgres:16.2 # The postgres image will be used
     restart: always # Always try to restart if this stops running
     environment:
       # Provide environment variables
