@@ -13,6 +13,32 @@ import (
 )
 
 func main() {
+	email := models.Email{
+		From:      models.DefaultSender,
+		To:        "abc@doamain.com",
+		Subject:   "Test mail",
+		Plaintext: "TEST MAILTRAP",
+	}
+	es := models.NewMailService(models.SMTPConfig{
+		Host:     "sandbox.smtp.mailtrap.io",
+		Port:     "25",
+		Username: "",
+		Password: "",
+	})
+
+	// test send mail
+	err := es.Send(email)
+	if err != nil {
+		panic(err)
+	}
+
+	// Test send mail reset password
+	err = es.ForgotPassword(email.To, "http://localhost:3000/signup")
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println("Email Send")
 	r := chi.NewRouter()
 
 	r.Get("/", controllers.StaticHandler(views.Must(views.ParseFS(templates.FS, "home-page.html", "paper.html"))))
