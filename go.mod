@@ -1,9 +1,9 @@
 module github.com/haidongNg/lenslocked
 
-go 1.21.5
+go 1.23
 
 require (
-	github.com/go-chi/chi/v5 v5.0.12
+	github.com/go-chi/chi/v5 v5.3.2
 	github.com/gorilla/csrf v1.7.2
 	github.com/lib/pq v1.10.9
 	golang.org/x/crypto v0.19.0
